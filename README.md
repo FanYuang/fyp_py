@@ -1,4 +1,4 @@
-# A Machine Learning Approach to Building Index Structures(python version)
+# A Machine Learning Approach to Building Index Structures(python version with flask)
 node.js version is here https://github.com/FanYuang/fyp_node
 ## Main theme of the project
 Compare the setting up time, memory occupation and querying time of different kinds of index/querying method
