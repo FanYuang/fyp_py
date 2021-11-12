@@ -3,7 +3,7 @@ node.js version is here https://github.com/FanYuang/fyp_node
 ## Main theme of the project
 Compare the setting up time, memory occupation and querying time of different kinds of index/querying method
 ## How to run
-use npm install all the third packages from npm and then run node/nodemon index.js
+use pip install all packages and then run flask run
 ## Usage of the routers
 ### /generatenum_normal
 Generate a normal distribution
