@@ -291,13 +291,18 @@ def generate_uniform():
 @app.route("/hashtable_uniform")
 def hashtable_uniform():
     # dict = {}
+    
     dict=MyDict()
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
+    
     for i,num in enumerate(dataset):
         __setitem__(dict, num, i)
      
     end=time.time()
-    size=sys.getsizeof(dict)
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
+
+    size=sizeb-sizea
     setup=end-start
     start=time.time()
     for num in testset:
@@ -310,18 +315,22 @@ def hashtable_uniform():
 
 @app.route("/hashtable_normal")
 def hashtable_normal():
-    dict=MyDict()
+     dict=MyDict()
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
+    
     for i,num in enumerate(dataset):
         __setitem__(dict, num, i)
      
     end=time.time()
-    size=sys.getsizeof(dict)
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
+
+    size=sizeb-sizea
     setup=end-start
     start=time.time()
     for num in testset:
         result=__getitem__(dict, num)
-     
+      
     end=time.time()
     query=end-start
     print(size,setup,query)
@@ -329,11 +338,13 @@ def hashtable_normal():
 
 @app.route("/binarysearch_uniform")
 def binarysearch_uniform():
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     index=sorted(dataset)
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
-    size=sys.getsizeof(index)
+    size=sizeb-sizea
     start=time.time()
     for num in testset:
         result= binarySearch(index, 0, len(index)-1, num)
@@ -346,15 +357,17 @@ def binarysearch_uniform():
 
 @app.route("/binarysearch_normal")
 def binarysearch_normal():
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     index=sorted(dataset)
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
-    size=sys.getsizeof(index)
+    size=sizeb-sizea
     start=time.time()
     for num in testset:
         result= binarySearch(index, 0, len(index)-1, num)
-      
+       
     end=time.time()
     query=end-start
     print(size,setup,query)
@@ -362,14 +375,16 @@ def binarysearch_normal():
 
 @app.route("/avl_uniform")
 def avl_uniform():
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     root=AVLTree()
     for num in dataset:
         root.insert(num)
 
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
-    size=sys.getsizeof(root)
+    size=sizeb-sizea
     start=time.time()
     # print(root)
     for num in testset:
@@ -383,14 +398,16 @@ def avl_uniform():
 
 @app.route("/avl_normal")
 def avl_normal():
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     root=AVLTree()
     for num in dataset:
         root.insert(num)
 
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
-    size=sys.getsizeof(root)
+    size=sizeb-sizea
     start=time.time()
     # print(root)
     for num in testset:
@@ -403,12 +420,14 @@ def avl_normal():
 
 @app.route("/trick_uniform")
 def trick_uniform():
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     index=sorted(dataset)
     
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
-    size=sys.getsizeof(index)
+    size=sizeb-sizea
     start=time.time()
     mean_var=0
     a=0
@@ -430,11 +449,14 @@ def trick_uniform():
 
 @app.route("/trick_normal")
 def trick_normal():
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     index=sorted(dataset)
+    
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
-    size=sys.getsizeof(index)
+    size=sizeb-sizea
     start=time.time()
     for i,num in enumerate(testset):
         result=tricksearch(index,round(num_nor * norm.cdf(num,mean,standard_d)),num)
@@ -471,6 +493,7 @@ def ml_uniform():
     tar=[]
     for i in range(len(dataset)):
         tar.append(i/(len(dataset)-1))
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     input=torch.tensor(test, dtype=torch.float)
     input=input.unsqueeze(1)
@@ -489,9 +512,10 @@ def ml_uniform():
         # print(output)
         # print(loss,i)
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
     # print(net)
-    size=sys.getsizeof(net)
+    size=sizeb-sizea
     testin=[]
     for num in testset:
         testin.append(num/data[len(dataset)-1])
@@ -520,6 +544,7 @@ def ml_normal():
     tar=[]
     for i in range(len(dataset)):
         tar.append(i/(len(dataset)-1))
+    sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     input=torch.tensor(test, dtype=torch.float)
     input=input.unsqueeze(1)
@@ -538,8 +563,9 @@ def ml_normal():
         # print(output)
         # print(loss,i)
     end=time.time()
+    sizeb=psutil.Process(os.getpid()).memory_info().rss
     setup=end-start
-    size=sys.getsizeof(net)
+    size=sizeb-sizea
     testin=[]
     for num in testset:
         testin.append(num/data[len(dataset)-1])
