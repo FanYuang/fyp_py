@@ -25,11 +25,11 @@ app = Flask(__name__)
 dataset=[]
 testset=[]
 mean = 0
-standard_d = 1000
-num_nor = 10000
+standard_d = 100000
+num_nor = 100000
 low=0
-high=100000
-num_uni =100000
+high=10000
+num_uni =10000
 
 class MyDict(object):
     def __init__(self, size=99999):
@@ -137,7 +137,7 @@ class AVLTree(object):
             return -1
         else:
             return node.height
-    #在node节点的左孩子k1的左子树添加了新节点，左旋转
+   
     def singleLeftRotate(self, node):
         k1 = node.left
         node.left = k1.right
@@ -145,7 +145,7 @@ class AVLTree(object):
         node.height = max(self.height(node.right), self.height(node.left)) + 1
         k1.height = max(self.height(k1.left), node.height) + 1
         return k1
-    #在node节点的右孩子k1的右子树添加了新节点，右旋转
+    
     def singleRightRotate(self, node):
         k1 = node.right
         node.right = k1.left
@@ -153,11 +153,11 @@ class AVLTree(object):
         node.height = max(self.height(node.right), self.height(node.left)) + 1
         k1.height = max(self.height(k1.right), node.height) + 1
         return k1
-    #在node节点的左孩子的右子树添加了新节点，先左后右
+    
     def doubleRightRotate(self, node):
         node.right = self.singleLeftRotate(node.right)
         return self.singleRightRotate(node)
-    #在node节点的右孩子的左子树添加了新节点,先右后左
+    
     def doubleLeftRotate(self, node):
         node.left = self.singleRightRotate(node.left)
         return self.singleLeftRotate(node)
@@ -229,20 +229,13 @@ class AVLTree(object):
 
 def tricksearch(sett, index, target):
     if (index<0 or index>(len(sett)-1)):
-        # if (sett[0]>target or sett[len(sett)-1]<target):
         return -1
-        # elif (index<0):
-        #     tricksearch(sett,0,target)
-        # elif (index>len(sett)-1):
-        #     tricksearch(sett,len(sett)-1,target)
     elif  (sett[index] < target):
         while (sett[index]<target):
             if (index<len(sett)-1):
                 index+=1
             else:
                 return -1
-        # if (sett.index(target)):
-        #     print(index,sett.index(target),sett[index],"<")
         if (sett[index]==target):
             return index
         else:
@@ -253,8 +246,6 @@ def tricksearch(sett, index, target):
                 index-=1
             else:
                 return -1
-        # if (sett.index(target)):
-        #     print(index,sett.index(target),sett[index],">")
         if (sett[index]==target):
             return index
         else:
@@ -290,15 +281,11 @@ def generate_uniform():
 
 @app.route("/hashtable_uniform")
 def hashtable_uniform():
-    # dict = {}
-    
     dict=MyDict()
     sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
-    
     for i,num in enumerate(dataset):
         __setitem__(dict, num, i)
-     
     end=time.time()
     sizeb=psutil.Process(os.getpid()).memory_info().rss
 
@@ -315,7 +302,7 @@ def hashtable_uniform():
 
 @app.route("/hashtable_normal")
 def hashtable_normal():
-     dict=MyDict()
+    dict=MyDict()
     sizea=psutil.Process(os.getpid()).memory_info().rss
     start=time.time()
     
@@ -347,8 +334,7 @@ def binarysearch_uniform():
     size=sizeb-sizea
     start=time.time()
     for num in testset:
-        result= binarySearch(index, 0, len(index)-1, num)
-       
+        result= binarySearch(index, 0, len(index)-1, num)       
     end=time.time()
     query=end-start
     print(size,setup,query)
@@ -433,15 +419,8 @@ def trick_uniform():
     a=0
     l=len(index)
     for i,num in enumerate(testset):
-        result=tricksearch(index,round(num_uni * (num - low) / (high - low)),num)
-        # result= binarySearch(index, max(round(num_uni * (num - low) / (high - low)-l/500),0), min(len(index)-1,round(num_uni * (num - low) / (high - low)+l/500)), num)
-        # if (result!=-1):
-        #     a=a+1
-        #     mean_var=mean_var+abs(round(num_uni * (num - low) / (high - low))-result)
-        #     print(round(num_uni * (num - low) / (high - low)),result)
+        result=tricksearch(index,round(num_uni * (num - low) / (high - low)),num)   
     end =time.time()
-    # mean_var=mean_var/a
-    # print(mean_var,a)
     query=end-start
     print(size,setup,query)
     return "<p>Heiheihei</p>"
@@ -460,8 +439,6 @@ def trick_normal():
     start=time.time()
     for i,num in enumerate(testset):
         result=tricksearch(index,round(num_nor * norm.cdf(num,mean,standard_d)),num)
-        # print(round(num_nor * norm.cdf(num,mean,standard_d)),num,result)
-        # result= binarySearch(index, max(round(num_nor * norm.cdf(num,mean,standard_d)-len(index)/100),0), min(len(index)-1,round(num_nor * norm.cdf(num,mean,standard_d)+len(index)/100)), num)
     end=time.time()
     query=end-start
     print(size,setup,query)
@@ -470,14 +447,9 @@ def trick_normal():
 class Net(nn.Module):
     def __init__(self):
         super(Net,self).__init__()
-        # self.hidden=nn.Linear(n_feature,n_hidden)
-        # self.predict=nn.Linear(n_hidden,n_output)
         self.fc1=nn.Linear(1,16)
         self.act1=nn.ReLU()
         self.fc2=nn.Linear(16,1)
-        # self.act2=nn.Sigmoid()
-        # self.fc3=nn.Linear(2,1)
-        # self.act3=nn.Sigmoid()
     def forward(self,x):
         x=self.fc1(x)
         x=self.act1(x)
@@ -526,7 +498,7 @@ def ml_uniform():
     start=time.time()
     for i,num in enumerate(testout):
         
-        result= binarySearch(data, max(0,round(num[0]*(len(dataset)-1)-len(data)/100)), min(len(data)-1,round(num[0]*(len(data)-1)+len(data)/100)),testset[i])
+        result=tricksearch(data,round(num[0]*(len(dataset)-1)),testset[i])
         
         # print(result,round(num[0]*(len(dataset)-1)),testset[i],i)
     end=time.time()
@@ -600,8 +572,6 @@ def ml_normal():
         #     mean_var=mean_var+abs(round(num[0]*(len(dataset)-1))-result)
         #     print(round(num[0]*(len(dataset)-1)),result)
     end =time.time()
-    # mean_var=mean_var/a
-    # print(mean_var,a)
     query=end-start
     print(size,setup,query)
     return "<p>Heiheihei</p>"
